@@ -5,8 +5,10 @@ import os
 import gsw
 from . import settingdefaults
 
+
 def download_gp15_data():
    os.system("wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1Gla6o_YihOCfU5pWGLhFvL-TKm_0aXfQ' -O names_added_GP15OMPA_33RR20180918_only_gs_rosette_clean1_hy1.csv") 
+
 
 def augment_df_with_PO_NO_SiO(df):  
     #remineralization ratios
@@ -18,8 +20,16 @@ def augment_df_with_PO_NO_SiO(df):
     df["SiO"] = df["oxygen"] + df["silicate"]*r_SiO
     return df
 
+
+def download_and_load_gp15_data(station_to_tc_cutoffs_url,
+                                cutoffs_file_name="station_to_tc_cutoffs.json"):
+    download_gp15_data()
+    return load_gp15_data(station_to_tc_cutoffs_url=station_to_tc_cutoffs_url,
+                          cutoffs_file_name=cutoffs_file_name)
+
+
 def load_gp15_data(station_to_tc_cutoffs_url,
-                   cutoffs_file_name="station_to_tc_cutoffs.json"):
+                   cutoffs_file_name):
     import pandas as pd
     import numpy as np
 
