@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import os
 import gsw
+from . import settingdefaults
 
 def download_gp15_data():
    os.system("wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1Gla6o_YihOCfU5pWGLhFvL-TKm_0aXfQ' -O names_added_GP15OMPA_33RR20180918_only_gs_rosette_clean1_hy1.csv") 
@@ -17,7 +18,8 @@ def augment_df_with_PO_NO_SiO(df):
     df["SiO"] = df["oxygen"] + df["silicate"]*r_SiO
     return df
 
-def load_gp15_data():
+def load_gp15_data(station_to_tc_cutoffs_url,
+                   cutoffs_file_name="station_to_tc_cutoffs.json"):
     import pandas as pd
     import numpy as np
 
@@ -87,4 +89,65 @@ def load_gp15_data():
     gp15_df = gp15_df.dropna()
     print("Rows without NA values:",len(gp15_df))
 
-    return gp15_df
+    download_file(url=station_to_tc_cutoffs_url, file_name=cutoffs_file_name)
+    station_to_tcstartend = json.loads(open(cutoffs_file_name).read())
+
+    gp15_intermediateanddeep = gp15_df[
+        gp15_df.apply(lambda x: x['Depth'] > station_to_tcstartend[str(int(x['stnnbr']))]['depth_cutoffs'][1], axis=1)] 
+
+    gp15_thermocline =  gp15_df[gp15_df.apply(
+            lambda x: (x['Depth'] > station_to_tcstartend[str(int(x['stnnbr']))]['depth_cutoffs'][0])
+                  and (x['Depth'] < station_to_tcstartend[str(int(x['stnnbr']))]['depth_cutoffs'][1]), axis=1)]
+
+    return gp15_df, gp15_intermediateanddeep, gp15_thermocline
+
+
+def download_file(url, file_name):
+   os.system("wget "+url+" -O "+file_name)
+
+
+def load_interanddeep_endmember_df(
+        df_url,
+        df_file_name="GP15_intermediateanddeep.csv"):
+    download_file(url=df_url, file_name=df_file_name)
+    endmember_df = pandas.read_csv(df_file_name)
+    endmember_df = augment_df_with_PO_NO_SiO(endmember_df)
+    return endmember_df
+
+
+def get_pyompa_soln(obs_df, endmember_df_touse,
+                     param_names=None, param_weightings=None,
+                     convertedparam_groups=None, usagepenalty=None,
+                     endmember_name_column="watermass_name",
+                     batch_size=100):
+
+    if param_names is None:
+        param_names = settingdefaults.PARAM_NAMES 
+        print("param_names is None; using defaults:")
+        print(param_names)
+
+    if param_weightings is None:
+        param_weightings = settingdefaults.PARAM_WEIGHTINGS
+        print("param_weightings is None; using defaults:")
+        print(param_weightings)
+
+    if convertedparam_groups is None:
+        convertedparam_groups=settingdefaults.CONVERTEDPARAM_GROUPS
+        print("convertedparam_groups is None; using defaults")
+        print(convertedparam_groups)
+
+    if usagepenalty is None:
+        usagepenalty = settingdefaults.USAGE_PENALTY
+        print("usagepenalty is None; using defaults")
+        print(usagepenalty)
+
+    return pyompa.OMPAProblem(
+              obs_df=gp15_intermediateanddeep,
+              endmembername_to_usagepenaltyfunc=usagepenalty_touse,
+              param_names=param_names,
+              param_weightings=param_weightings,
+              convertedparam_groups=convertedparam_groups,
+              usagepenalty=usagepenalty).solve(
+                  endmember_df_touse,
+                  endmember_name_column=endmember_name_column,
+                  batch_size=batch_size)
