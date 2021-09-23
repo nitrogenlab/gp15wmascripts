@@ -151,12 +151,11 @@ def get_pyompa_soln(obs_df, endmember_df_touse,
         print(usagepenalty)
 
     return pyompa.OMPAProblem(
-              obs_df=gp15_intermediateanddeep,
-              endmembername_to_usagepenaltyfunc=usagepenalty_touse,
+              obs_df=obs_df,
+              endmembername_to_usagepenaltyfunc=usagepenalty,
               param_names=param_names,
               param_weightings=param_weightings,
-              convertedparam_groups=convertedparam_groups,
-              usagepenalty=usagepenalty).solve(
+              convertedparam_groups=convertedparam_groups).solve(
                   endmember_df_touse,
                   endmember_name_column=endmember_name_column,
                   batch_size=batch_size)
