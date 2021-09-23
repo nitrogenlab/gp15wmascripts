@@ -31,9 +31,6 @@ def download_and_load_gp15_data(station_to_tc_cutoffs_url,
 
 def load_gp15_data(station_to_tc_cutoffs_url,
                    cutoffs_file_name):
-    import pandas as pd
-    import numpy as np
-
     header = ["c"+str(i) for i in range(1,30)]
     header[4] = "bottle flag"
     header[14] = "CTD salinity flag"
@@ -121,7 +118,7 @@ def load_interanddeep_endmember_df(
         df_url,
         df_file_name="GP15_intermediateanddeep.csv"):
     download_file(url=df_url, file_name=df_file_name)
-    endmember_df = pandas.read_csv(df_file_name)
+    endmember_df = pd.read_csv(df_file_name)
     endmember_df = augment_df_with_PO_NO_SiO(endmember_df)
     return endmember_df
 
