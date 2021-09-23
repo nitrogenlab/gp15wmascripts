@@ -5,6 +5,7 @@ import os
 import gsw
 from . import settingdefaults
 import json
+import pyompa
 
 
 def download_gp15_data():
