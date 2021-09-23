@@ -4,6 +4,7 @@ import numpy as np
 import os
 import gsw
 from . import settingdefaults
+import json
 
 
 def download_gp15_data():
