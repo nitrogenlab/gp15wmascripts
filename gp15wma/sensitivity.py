@@ -1,5 +1,5 @@
 from __future__ import division, print_function
-from pyomp import OMPAProblem
+from pyompa import OMPAProblem
 
 
 OmpaArguments = namedtuple("OMPAArguments",
