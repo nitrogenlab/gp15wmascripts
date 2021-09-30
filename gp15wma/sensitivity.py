@@ -1,6 +1,6 @@
 from __future__ import division, print_function
 from pyompa import OMPAProblem
-from pyompa.core import ExportToCsvMixin
+from pyompa.ompacore import ExportToCsvMixin
 from collections import namedtuple
 
 
