@@ -1,7 +1,7 @@
 from __future__ import division, print_function
 from pyompa import OMPAProblem
 from pyompa.ompacore import ExportToCsvMixin
-from collections import namedtuple
+from collections import namedtuple, OrderedDict
 import numpy as np
 
 
