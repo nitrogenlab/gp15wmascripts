@@ -2,6 +2,7 @@ from __future__ import division, print_function
 from pyompa import OMPAProblem
 from pyompa.ompacore import ExportToCsvMixin
 from collections import namedtuple
+import numpy as np
 
 
 OmpaArguments = namedtuple("OMPAArguments",
