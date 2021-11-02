@@ -6,10 +6,13 @@ import gsw
 from . import settingdefaults
 import json
 import pyompa
+import scipy.io
 
 
 def download_gp15_data():
-   os.system("wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1Gla6o_YihOCfU5pWGLhFvL-TKm_0aXfQ' -O names_added_GP15OMPA_33RR20180918_only_gs_rosette_clean1_hy1.csv") 
+   #os.system("wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1Gla6o_YihOCfU5pWGLhFvL-TKm_0aXfQ' -O names_added_GP15OMPA_33RR20180918_only_gs_rosette_clean1_hy1.csv") 
+    os.system("wget 'http://optserv1.whoi.edu/jgofsopt/80/128.12.123.170/GP15_Bottle_Leg1.mat' -O GP15_Bottle_Leg1.mat")
+    os.system("wget 'wget http://optserv1.whoi.edu/jgofsopt/80/128.12.123.170/GP15_Bottle_Leg2.mat' -O GP15_Bottle_Leg2.mat")
 
 
 def augment_df_with_PO_NO_SiO(df):  
@@ -32,33 +35,108 @@ def download_and_load_gp15_data(station_to_tc_cutoffs_url,
 
 def load_gp15_data(station_to_tc_cutoffs_url,
                    cutoffs_file_name):
-    header = ["c"+str(i) for i in range(1,30)]
-    header[4] = "bottle flag"
-    header[14] = "CTD salinity flag"
-    #header[16] = "bottle salinity flag"
-    header[20] = "bottle oxygen flag"
-    header[22] = "silicate flag"
-    header[24] = "nitrate flag"
-    header[28] = "phosphate flag"
+    #header = ["c"+str(i) for i in range(1,30)]
+    #header[4] = "bottle flag"
+    #header[14] = "CTD salinity flag"
+    ##header[16] = "bottle salinity flag"
+    #header[20] = "bottle oxygen flag"
+    #header[22] = "silicate flag"
+    #header[24] = "nitrate flag"
+    #header[28] = "phosphate flag"
 
-    header[11] = "CTD pressure"
-    header[12] = "CTD temperature"
-    header[13] = "practical_salinity" #CTD practical salinity
-    #header[15] = "bottle_practical_salinity" 
-    header[8] = "lat"
-    header[9] = "lon"
+    #header[11] = "CTD pressure"
+    #header[12] = "CTD temperature"
+    #header[13] = "practical_salinity" #CTD practical salinity
+    ##header[15] = "bottle_practical_salinity" 
+    #header[8] = "lat"
+    #header[9] = "lon"
 
-    header[0] = "stnnbr"
-    header[5] = "geotrc_ID"
-    header[10] = "bottom depth"
-    header[19] = "oxygen"
-    header[21] = "silicate"
-    header[23] = "nitrate"
-    header[27] = "phosphate"
+    #header[0] = "stnnbr"
+    #header[5] = "geotrc_ID"
+    #header[10] = "bottom depth"
+    #header[19] = "oxygen"
+    #header[21] = "silicate"
+    #header[23] = "nitrate"
+    #header[27] = "phosphate"
 
-    gp15_df = pd.read_csv(
-      "names_added_GP15OMPA_33RR20180918_only_gs_rosette_clean1_hy1.csv",
-      names=header, na_values = -999)
+    #gp15_df = pd.read_csv(
+    #  "names_added_GP15OMPA_33RR20180918_only_gs_rosette_clean1_hy1.csv",
+    #  names=header, na_values = -999)
+
+    leg1 = scipy.io.loadmat('GP15_Bottle_Leg1.mat')
+    leg2 = scipy.io.loadmat('GP15_Bottle_Leg2.mat')
+
+    header_mapping = {
+        'bottle flag': ('BTLNBR_FLAG_W', 'BTLNBR_FLAG_W'),
+        'CTD salinity flag': ('CTDSAL_FLAG_W', 'CTDSAL_FLAG_W'),
+        #"bottle salinity flag": ('Flag_SALINITY_D_CONC_BOTTLE_tcj2lg',
+        #                         'Flag_SALINITY_D_CONC_BOTTLE_zva7jm'),
+        "bottle oxygen flag": ('Flag_OXYGEN_D_CONC_BOTTLE_qizf9x',
+                               'Flag_OXYGEN_D_CONC_BOTTLE_n41f8b'),
+        "silicate flag": ('Flag_SILICATE_D_CONC_BOTTLE_l9fh07',
+                          'Flag_SILICATE_D_CONC_BOTTLE_3fot83'),
+        "nitrate flag": ('Flag_NITRATE_D_CONC_BOTTLE_xhgtuv',
+                         'Flag_NITRATE_D_CONC_BOTTLE_bugat8'),
+        "phosphate flag": ('Flag_PHOSPHATE_D_CONC_BOTTLE_lof4ap',
+                           'Flag_PHOSPHATE_D_CONC_BOTTLE_d0rgav'),
+        "CTD pressure": ('CTDPRS', 'CTDPRS'),
+        "CTD temperature" : ('CTDTMP', 'CTDTMP'),
+        "practical_salinity" : ('CTDSAL', 'CTDSAL'), #CTD practical salinity
+        "lat" : ('LATITUDE', 'LATITUDE'),
+        "lon": ('LONGITUDE', 'LONGITUDE'),
+        "stnnbr": ('STNNBR', 'STNNBR'),
+        "geotrc_ID": ('GEOTRC_SAMPNO', 'GEOTRC_SAMPNO'),
+        "bottom depth": ('DEPTH', 'DEPTH'),
+        "oxygen": ('OXYGEN_D_CONC_BOTTLE_qizf9x',
+                   'OXYGEN_D_CONC_BOTTLE_n41f8b'),
+        "silicate": ('SILICATE_D_CONC_BOTTLE_l9fh07',
+                     'SILICATE_D_CONC_BOTTLE_3fot83'),
+        "nitrate": ('NITRATE_D_CONC_BOTTLE_xhgtuv',
+                    'NITRATE_D_CONC_BOTTLE_bugat8'),
+        'phosphate': ('PHOSPHATE_D_CONC_BOTTLE_lof4ap',
+                      'PHOSPHATE_D_CONC_BOTTLE_d0rgav')
+    }
+
+    dict_for_data_frame = OrderedDict()
+
+    def convert_if_string(arr, legname):
+        numpy_arr = np.array(arr.squeeze())
+        if  (legname == "STNNBR" or legname == "GEOTRC_SAMPNO"):
+            return numpy_arr
+        elif (str(numpy_arr.dtype) == "<U4" or str(numpy_arr.dtype) == "<U5" 
+          or str(numpy_arr.dtype) == "<U6" or str(numpy_arr.dtype) == "<U7" 
+          or str(numpy_arr.dtype) == "<U8" or str(numpy_arr.dtype) == "<U9" 
+          or str(numpy_arr.dtype) == "<U11" or str(numpy_arr.dtype) == "<U12"): 
+            return np.array([(float(x) if x != 'nd' else np.nan)
+                             for x in numpy_arr])
+        else:
+            return numpy_arr
+
+        if (numpy_arr == "<U4" or str(numpy_arr.dtype) == "<U5" 
+          or str(numpy_arr.dtype) == "<U6" or str(numpy_arr.dtype) == "<U7" 
+          or str(numpy_arr.dtype) == "<U8" or str(numpy_arr.dtype) == "<U9" 
+          or str(numpy_arr.dtype) == "<U11" or str(numpy_arr.dtype) == "<U12"): 
+            return np.array([(float(x) if x != 'nd' else np.nan)
+                             for x in numpy_arr])
+        else:
+            return numpy_arr
+
+        for (new_header_name,
+             (leg1_name, leg2_name)) in header_mapping.items():
+            print(new_header_name, leg1_name, leg2_name)
+            leg1_arr = convert_if_string(leg1[leg1_name], leg1_name)
+            leg2_arr = convert_if_string(leg2[leg2_name], leg2_name)
+            print(leg1_arr.dtype)
+            if (str(leg1_arr.dtype)=='uint8'
+                 or str(leg1_arr.dtype)=='float64'):
+                print("leg1 nans", np.sum(np.isnan(leg1_arr)))
+                print("leg2 nans", np.sum(np.isnan(leg2_arr)))
+            else:
+                print('leg1 and leg2 arrays are strings.')
+            dict_for_data_frame[new_header_name] = np.concatenate(
+                [leg1_arr, leg2_arr])
+
+    gp15_df = pd.DataFrame(dict_for_data_frame)
 
     #remove bad data
     for flag_type in ["bottle flag", "CTD salinity flag", "bottle oxygen flag",
