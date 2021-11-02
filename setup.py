@@ -13,4 +13,4 @@ if __name__== '__main__':
           setup_requires=[],
           install_requires=['gsw', 'pyompa'],
           scripts=[],
-          name='gp15wmascripts')
+          name='gp15wma')

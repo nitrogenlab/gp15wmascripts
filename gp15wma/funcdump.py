@@ -7,12 +7,13 @@ from . import settingdefaults
 import json
 import pyompa
 import scipy.io
+from collections import OrderedDict
 
 
 def download_gp15_data():
    #os.system("wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1Gla6o_YihOCfU5pWGLhFvL-TKm_0aXfQ' -O names_added_GP15OMPA_33RR20180918_only_gs_rosette_clean1_hy1.csv") 
     os.system("wget 'http://optserv1.whoi.edu/jgofsopt/80/128.12.123.170/GP15_Bottle_Leg1.mat' -O GP15_Bottle_Leg1.mat")
-    os.system("wget 'wget http://optserv1.whoi.edu/jgofsopt/80/128.12.123.170/GP15_Bottle_Leg2.mat' -O GP15_Bottle_Leg2.mat")
+    os.system("wget 'http://optserv1.whoi.edu/jgofsopt/80/128.12.123.170/GP15_Bottle_Leg2.mat' -O GP15_Bottle_Leg2.mat")
 
 
 def augment_df_with_PO_NO_SiO(df):  
@@ -33,36 +34,7 @@ def download_and_load_gp15_data(station_to_tc_cutoffs_url,
                           cutoffs_file_name=cutoffs_file_name)
 
 
-def load_gp15_data(station_to_tc_cutoffs_url,
-                   cutoffs_file_name):
-    #header = ["c"+str(i) for i in range(1,30)]
-    #header[4] = "bottle flag"
-    #header[14] = "CTD salinity flag"
-    ##header[16] = "bottle salinity flag"
-    #header[20] = "bottle oxygen flag"
-    #header[22] = "silicate flag"
-    #header[24] = "nitrate flag"
-    #header[28] = "phosphate flag"
-
-    #header[11] = "CTD pressure"
-    #header[12] = "CTD temperature"
-    #header[13] = "practical_salinity" #CTD practical salinity
-    ##header[15] = "bottle_practical_salinity" 
-    #header[8] = "lat"
-    #header[9] = "lon"
-
-    #header[0] = "stnnbr"
-    #header[5] = "geotrc_ID"
-    #header[10] = "bottom depth"
-    #header[19] = "oxygen"
-    #header[21] = "silicate"
-    #header[23] = "nitrate"
-    #header[27] = "phosphate"
-
-    #gp15_df = pd.read_csv(
-    #  "names_added_GP15OMPA_33RR20180918_only_gs_rosette_clean1_hy1.csv",
-    #  names=header, na_values = -999)
-
+def gp15_load_mat_data():
     leg1 = scipy.io.loadmat('GP15_Bottle_Leg1.mat')
     leg2 = scipy.io.loadmat('GP15_Bottle_Leg2.mat')
 
@@ -121,22 +93,57 @@ def load_gp15_data(station_to_tc_cutoffs_url,
         else:
             return numpy_arr
 
-        for (new_header_name,
-             (leg1_name, leg2_name)) in header_mapping.items():
-            print(new_header_name, leg1_name, leg2_name)
-            leg1_arr = convert_if_string(leg1[leg1_name], leg1_name)
-            leg2_arr = convert_if_string(leg2[leg2_name], leg2_name)
-            print(leg1_arr.dtype)
-            if (str(leg1_arr.dtype)=='uint8'
-                 or str(leg1_arr.dtype)=='float64'):
-                print("leg1 nans", np.sum(np.isnan(leg1_arr)))
-                print("leg2 nans", np.sum(np.isnan(leg2_arr)))
-            else:
-                print('leg1 and leg2 arrays are strings.')
-            dict_for_data_frame[new_header_name] = np.concatenate(
-                [leg1_arr, leg2_arr])
+    for (new_header_name,
+         (leg1_name, leg2_name)) in header_mapping.items():
+        print(new_header_name, leg1_name, leg2_name)
+        leg1_arr = convert_if_string(leg1[leg1_name], leg1_name)
+        leg2_arr = convert_if_string(leg2[leg2_name], leg2_name)
+        print(leg1_arr.dtype)
+        if (str(leg1_arr.dtype)=='uint8'
+             or str(leg1_arr.dtype)=='float64'):
+            print("leg1 nans", np.sum(np.isnan(leg1_arr)))
+            print("leg2 nans", np.sum(np.isnan(leg2_arr)))
+        else:
+            print('leg1 and leg2 arrays are strings.')
+        dict_for_data_frame[new_header_name] = np.concatenate(
+            [leg1_arr, leg2_arr])
 
     gp15_df = pd.DataFrame(dict_for_data_frame)
+
+    return gp15_df
+
+
+def load_gp15_data(station_to_tc_cutoffs_url,
+                   cutoffs_file_name):
+    #header = ["c"+str(i) for i in range(1,30)]
+    #header[4] = "bottle flag"
+    #header[14] = "CTD salinity flag"
+    ##header[16] = "bottle salinity flag"
+    #header[20] = "bottle oxygen flag"
+    #header[22] = "silicate flag"
+    #header[24] = "nitrate flag"
+    #header[28] = "phosphate flag"
+
+    #header[11] = "CTD pressure"
+    #header[12] = "CTD temperature"
+    #header[13] = "practical_salinity" #CTD practical salinity
+    ##header[15] = "bottle_practical_salinity" 
+    #header[8] = "lat"
+    #header[9] = "lon"
+
+    #header[0] = "stnnbr"
+    #header[5] = "geotrc_ID"
+    #header[10] = "bottom depth"
+    #header[19] = "oxygen"
+    #header[21] = "silicate"
+    #header[23] = "nitrate"
+    #header[27] = "phosphate"
+
+    #gp15_df = pd.read_csv(
+    #  "names_added_GP15OMPA_33RR20180918_only_gs_rosette_clean1_hy1.csv",
+    #  names=header, na_values = -999)
+
+    gp15_df = gp15_load_mat_data()
 
     #remove bad data
     for flag_type in ["bottle flag", "CTD salinity flag", "bottle oxygen flag",
@@ -147,15 +154,16 @@ def load_gp15_data(station_to_tc_cutoffs_url,
     #add PO and NO to data frame
     augment_df_with_PO_NO_SiO(gp15_df)
 
-    absolute_salinity = gsw.SA_from_SP(SP=gp15_df["practical_salinity"],
-                                       p=gp15_df["CTD pressure"],
-                                       lon=gp15_df["lon"],
-                                       lat=gp15_df["lat"])
+    absolute_salinity = gsw.SA_from_SP(
+        SP=np.array(gp15_df["practical_salinity"]),
+        p=np.array(gp15_df["CTD pressure"]),
+        lon=np.array(gp15_df["lon"]),
+        lat=np.array(gp15_df["lat"]))
     gp15_df["absolute_salinity"] = absolute_salinity
 
     conservative_temp = gsw.CT_from_t(SA=absolute_salinity,
-                                      t=gp15_df["CTD temperature"],
-                                      p=gp15_df["CTD pressure"])
+                                      t=np.array(gp15_df["CTD temperature"]),
+                                      p=np.array(gp15_df["CTD pressure"]))
     gp15_df["conservative_temp"] = conservative_temp
 
     potential_temp = gsw.pt_from_CT(SA=absolute_salinity,
@@ -165,7 +173,8 @@ def load_gp15_data(station_to_tc_cutoffs_url,
     sig0 = gsw.rho(SA=absolute_salinity, CT=conservative_temp, p=0) - 1000
     gp15_df["sigma0"] = sig0
 
-    z = gsw.z_from_p(p=gp15_df["CTD pressure"], lat=gp15_df["lat"])
+    z = gsw.z_from_p(p=np.array(gp15_df["CTD pressure"]),
+                     lat=np.array(gp15_df["lat"]))
     depth = -z #https://github.com/TEOS-10/python-gsw/blob/7d6ebe8114c5d8b4a64268d36100a70e226afaf6/gsw/gibbs/conversions.py#L577
     gp15_df["Depth"] = depth
 
@@ -180,11 +189,16 @@ def load_gp15_data(station_to_tc_cutoffs_url,
     station_to_tcstartend = json.loads(open(cutoffs_file_name).read())
 
     gp15_intermediateanddeep = gp15_df[
-        gp15_df.apply(lambda x: x['Depth'] > station_to_tcstartend[str(int(x['stnnbr']))]['depth_cutoffs'][1], axis=1)] 
+        gp15_df.apply(
+          lambda x: x['Depth'] >
+                    station_to_tcstartend[
+                      str(float(x['stnnbr']))]['depth_cutoffs'][1], axis=1)] 
 
     gp15_thermocline =  gp15_df[gp15_df.apply(
-            lambda x: (x['Depth'] > station_to_tcstartend[str(int(x['stnnbr']))]['depth_cutoffs'][0])
-                  and (x['Depth'] < station_to_tcstartend[str(int(x['stnnbr']))]['depth_cutoffs'][1]), axis=1)]
+            lambda x: (x['Depth'] > station_to_tcstartend[
+                         str(float(x['stnnbr']))]['depth_cutoffs'][0])
+                  and (x['Depth'] < station_to_tcstartend[
+                         str(float(x['stnnbr']))]['depth_cutoffs'][1]), axis=1)]
 
     return gp15_df, gp15_intermediateanddeep, gp15_thermocline
 
