@@ -113,38 +113,8 @@ def gp15_load_mat_data():
     return gp15_df
 
 
-def load_gp15_data(station_to_tc_cutoffs_url,
-                   cutoffs_file_name):
-    #header = ["c"+str(i) for i in range(1,30)]
-    #header[4] = "bottle flag"
-    #header[14] = "CTD salinity flag"
-    ##header[16] = "bottle salinity flag"
-    #header[20] = "bottle oxygen flag"
-    #header[22] = "silicate flag"
-    #header[24] = "nitrate flag"
-    #header[28] = "phosphate flag"
-
-    #header[11] = "CTD pressure"
-    #header[12] = "CTD temperature"
-    #header[13] = "practical_salinity" #CTD practical salinity
-    ##header[15] = "bottle_practical_salinity" 
-    #header[8] = "lat"
-    #header[9] = "lon"
-
-    #header[0] = "stnnbr"
-    #header[5] = "geotrc_ID"
-    #header[10] = "bottom depth"
-    #header[19] = "oxygen"
-    #header[21] = "silicate"
-    #header[23] = "nitrate"
-    #header[27] = "phosphate"
-
-    #gp15_df = pd.read_csv(
-    #  "names_added_GP15OMPA_33RR20180918_only_gs_rosette_clean1_hy1.csv",
-    #  names=header, na_values = -999)
-
+def load_gp15_data_unsplit():
     gp15_df = gp15_load_mat_data()
-
     #remove bad data
     for flag_type in ["bottle flag", "CTD salinity flag", "bottle oxygen flag",
                       "silicate flag", "nitrate flag", "phosphate flag"]:
@@ -184,6 +154,14 @@ def load_gp15_data(station_to_tc_cutoffs_url,
     print("Rows in gp15 datafile:",len(gp15_df))
     gp15_df = gp15_df.dropna()
     print("Rows without NA values:",len(gp15_df))
+
+    return gp15_df
+
+
+def load_gp15_data(station_to_tc_cutoffs_url,
+                   cutoffs_file_name):
+
+    gp15_df = load_gp15_data_unsplit()
 
     download_file(url=station_to_tc_cutoffs_url, file_name=cutoffs_file_name)
     station_to_tcstartend = json.loads(open(cutoffs_file_name).read())
