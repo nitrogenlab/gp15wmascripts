@@ -84,15 +84,6 @@ def gp15_load_mat_data():
         else:
             return numpy_arr
 
-        if (numpy_arr == "<U4" or str(numpy_arr.dtype) == "<U5" 
-          or str(numpy_arr.dtype) == "<U6" or str(numpy_arr.dtype) == "<U7" 
-          or str(numpy_arr.dtype) == "<U8" or str(numpy_arr.dtype) == "<U9" 
-          or str(numpy_arr.dtype) == "<U11" or str(numpy_arr.dtype) == "<U12"): 
-            return np.array([(float(x) if x != 'nd' else np.nan)
-                             for x in numpy_arr])
-        else:
-            return numpy_arr
-
     for (new_header_name,
          (leg1_name, leg2_name)) in header_mapping.items():
         print(new_header_name, leg1_name, leg2_name)

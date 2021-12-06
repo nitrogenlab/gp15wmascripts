@@ -34,59 +34,86 @@ PARAM_WEIGHTINGS = {
 USAGE_PENALTY = { 
     "ENPCW_0": EndMemExpPenaltyFunc(
         spec={
-            'sigma0':{'type':'density_default', 'upperbound':27.0},
-            'lat': {'type':'latlon_default', 'lowerbound':0}
+            'sigma0':{'type':'density_default', 'upperbound':27},
+            'lat': {'type':'other',"alpha":0.03, "beta":50, 'lowerbound':0}
             }),
     "ENPCW_1": EndMemExpPenaltyFunc(
         spec={
-            'sigma0':{'type':'density_default', 'upperbound':27.0},
-            'lat': {'type':'latlon_default', 'lowerbound':0}
+            'sigma0':{'type':'density_default', 'upperbound':27},
+            'lat': {'type':'other',"alpha":0.03, "beta":50, 'lowerbound':0}
             }),
 
     "SPCW_0": EndMemExpPenaltyFunc(
         spec={
-            'lat': {'type':'latlon_default', 'upperbound':0}
-            }),
+            'lat': {'type':'other',"alpha":0.03, "beta":50,'upperbound':5},
+            'sigma0':{'type':'density_default', 'upperbound':27.4},
+              }),
     "SPCW_1": EndMemExpPenaltyFunc(
         spec={
-            'lat': {'type':'latlon_default', 'upperbound':0}
-            }),
-
+            'lat': {'type':'other',"alpha":0.03, "beta":50, 'upperbound':5},
+            'sigma0':{'type':'density_default', 'upperbound':27.4},
+              }),
     "PSUW_0": EndMemExpPenaltyFunc(
-        spec={'lat': {'type':'latlon_default', 'lowerbound':10}}),
+        spec={
+              'lat': {'type':'other',"alpha":0.03, "beta":50, 'lowerbound':20}
+              }),
     "PSUW_1": EndMemExpPenaltyFunc(
-        spec={'lat': {'type':'latlon_default', 'lowerbound':10}}),
+        spec={'lat': {'type':'other',"alpha":0.03, "beta":50, 'lowerbound':20}
+              }),
 
     "ESSW_0": EndMemExpPenaltyFunc(
-        spec={'lat': {'type':'latlon_default', 'lowerbound':-25, 'upperbound':25}}),
+        spec={'sigma0':{'type':'density_default', 'upperbound':27.2},
+              'lat': {'type':'other',"alpha":0.03, "beta":50, 'lowerbound':-20, 'upperbound':20}
+              }),
     "ESSW_1": EndMemExpPenaltyFunc(
-        spec={'lat': {'type':'latlon_default', 'lowerbound':-25, 'upperbound':25}}),
+        spec={'sigma0':{'type':'density_default', 'upperbound':27.2},
+              'lat': {'type':'other',"alpha":0.03, "beta":50, 'lowerbound':-20, 'upperbound':20}
+              }),
 
     "EqIW_0": EndMemExpPenaltyFunc(
-        spec={'lat': {'type':'latlon_default', 'upperbound':20}}),
+        spec={'sigma0':{'type':'density_default', 'upperbound':27.6},
+              'lat': {'type':'other',"alpha":0.03, "beta":50, 'lowerbound':-20, 'upperbound':20}
+              }),
     "EqIW_1": EndMemExpPenaltyFunc(
-        spec={'lat': {'type':'latlon_default', 'upperbound':20}}),
+        spec={'sigma0':{'type':'density_default', 'upperbound':27.6},
+              'lat': {'type':'other',"alpha":0.03, "beta":50, 'lowerbound':-20, 'upperbound':20}
+              }),
     
     "LCDW_0": EndMemExpPenaltyFunc(
-        spec={'sigma0': {'type':'density_default', 'lowerbound':27.7}}),
+        spec={'sigma0': {'type':'density_default', 'lowerbound':27.7},
+            'lat': {'type':'latlon_default', 'upperbound':40}
+            }),
     "LCDW_1": EndMemExpPenaltyFunc(
-        spec={'sigma0': {'type':'density_default', 'lowerbound':27.7}}),
-
-    "PDW_0": EndMemExpPenaltyFunc(
-        spec={'sigma0': {'type':'density_default', 'lowerbound':27.3}}),
-    "PDW_1": EndMemExpPenaltyFunc(
-        spec={'sigma0': {'type':'density_default', 'lowerbound':27.3}}),
-
+        spec={'sigma0': {'type':'density_default', 'lowerbound':27.7},
+            'lat': {'type':'latlon_default', 'upperbound':40}
+            }),
 
     "AAIW_0": EndMemExpPenaltyFunc(
-        spec={'lat': {'type':'latlon_default', 'upperbound':10}}),
+        spec={'sigma0':{'type':'density_default', 'upperbound':27.6},
+              'lat': {'type':'other',"alpha":0.03, "beta":50, 'upperbound':10}
+              }),
     "AAIW_1": EndMemExpPenaltyFunc(
-        spec={'lat': {'type':'latlon_default', 'upperbound':10}}),
-    
+        spec={'sigma0':{'type':'density_default', 'upperbound':27.6},
+              'lat': {'type':'other',"alpha":0.03, "beta":50, 'upperbound':10}
+              }),
+
+    "NPIW_0": EndMemExpPenaltyFunc(
+        spec={'lat': {'type':'latlon_default', 'lowerbound':20}
+              }),
+    "NPIW_1": EndMemExpPenaltyFunc(
+        spec={'lat': {'type':'latlon_default', 'lowerbound':20}
+              }),
+    "NPIW_2": EndMemExpPenaltyFunc(
+        spec={'lat': {'type':'latlon_default', 'lowerbound':20}
+              }),
+              
     "UCDW_0": EndMemExpPenaltyFunc(
-        spec={'sigma0': {'type':'density_default', 'lowerbound':27.3}}),
+        spec={'sigma0': {'type':'density_default', 'lowerbound':27.3},
+            'lat': {'type':'latlon_default', 'upperbound':40}
+            }),
 
     "AABW_0": EndMemExpPenaltyFunc(
         spec={'sigma0': {'type':'density_default', 'lowerbound':27.8},
-              'lat': {'type': 'latlon_default', 'upperbound': 30} })
-}
+            'lat': {'type':'latlon_default', 'upperbound':30}
+            }),
+} 
