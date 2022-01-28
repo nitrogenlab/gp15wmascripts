@@ -1,6 +1,6 @@
 import pyompa
 from pyompa import EndMemExpPenaltyFunc
-from pyompa import GeneralPenaltyFunc
+from pyompa.endmemberpenaltyfunc import GeneralPenaltyFunc
 from collections import OrderedDict
 
 PARAM_NAMES = ["conservative_temp", "absolute_salinity",
