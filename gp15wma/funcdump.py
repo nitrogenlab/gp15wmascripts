@@ -14,9 +14,8 @@ def download_gp15_data():
    #os.system("wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1Gla6o_YihOCfU5pWGLhFvL-TKm_0aXfQ' -O names_added_GP15OMPA_33RR20180918_only_gs_rosette_clean1_hy1.csv") 
     #os.system("wget 'http://optserv1.whoi.edu/jgofsopt/80/128.12.123.170/GP15_Bottle_Leg1.mat' -O GP15_Bottle_Leg1.mat")
     #os.system("wget 'http://optserv1.whoi.edu/jgofsopt/80/128.12.123.170/GP15_Bottle_Leg2.mat' -O GP15_Bottle_Leg2.mat")
-    os.system("wget 'http://optserv1.whoi.edu/jgofsopt/80/128.12.123.50/GP15_Bottle_Leg1.mat' -O GP15_Bottle_Leg1.mat")
-    os.system("wget 'http://optserv1.whoi.edu/jgofsopt/80/128.12.123.50/GP15_Bottle_Leg2.mat' -O GP15_Bottle_Leg2.mat")
-
+    os.system("wget 'http://raw.githubusercontent.com/nitrogenlab/GP15_watermassanalysis/main/GP15_Bottle_Leg1.mat' -O GP15_Bottle_Leg1.mat")
+    os.system("wget 'http://raw.githubusercontent.com/nitrogenlab/GP15_watermassanalysis/main/GP15_Bottle_Leg2.mat' -O GP15_Bottle_Leg2.mat")
 
 def augment_df_with_PO_NO_SiO(df):  
     #remineralization ratios
