@@ -59,6 +59,12 @@ def p16_load_data():
     gp15_df["Depth"] = depth
 
     print("Rows:",len(gp15_df))
+
+    return gp15_df
+
+
+def load_p16_data_unsplit():
+    gp15_df = p16_load_data()
     #filter out bad data
     for flag_type in ["salinity flag", "oxygen flag",
                       "silicate flag", "nitrate flag", "phosphate flag"]:
@@ -72,24 +78,6 @@ def p16_load_data():
     #remove ros west of -140
     gp15_df = gp15_df[gp15_df['lon']<-140]
     print("no. of rows east of -140:",len(gp15_df))
-
-    return gp15_df
-
-
-def load_p16_data_unsplit():
-    gp15_df = p16_load_data()
-    #filter out bad data
-    for flag_type in ["salinity flag", "oxygen flag",
-                  "silicate flag", "nitrate flag", "phosphate flag"]:
-         gp15_df = gp15_df[gp15_df[flag_type] <= 8]
-    gp15_df = pd.DataFrame(gp15_df)
-    print("no. of rows with flag above 9/missing:",len(gp15_df))
-    #remove bad data
-    for flag_type in ["salinity flag", "oxygen flag",
-                  "silicate flag", "nitrate flag", "phosphate flag"]:
-         gp15_df = gp15_df[gp15_df[flag_type] <= 3]
-    gp15_df = pd.DataFrame(gp15_df)
-    print("no. of rows with flag above 4:",len(gp15_df))
 
     return gp15_df
 
