@@ -57,13 +57,16 @@ def p16_load_data():
     z = gsw.z_from_p(p=np.array(gp15_df["CTD pressure"]), lat=np.array(gp15_df["lat"]))
     depth = -z #https://github.com/TEOS-10/python-gsw/blob/7d6ebe8114c5d8b4a64268d36100a70e226afaf6/gsw/gibbs/conversions.py#L577
     gp15_df["Depth"] = depth
+    
+    #merge cruises 276 and 277 as one 
+    gp15_df = gp15_df.replace({'cruise': 277}, 276)
 
     print("Rows:",len(gp15_df))
 
     return gp15_df
 
 
-def load_p16_data_split(cruise_number=1044):
+def load_p16_data_split(cruise_number):
     gp15_df = p16_load_data()
     #filter out bad data
     for flag_type in ["salinity flag", "oxygen flag",
