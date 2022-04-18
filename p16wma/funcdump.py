@@ -13,7 +13,7 @@ from collections import OrderedDict
 def download_p16_data():
     os.system("wget 'http://www.ncei.noaa.gov/data/oceans/ncei/ocads/data/0237935/GLODAPv2.2021_Pacific_Ocean.csv' -O GLODAPv2.2021_Pacific_Ocean.csv")
 
-def download_and_load_p16_data(station_to_tc_cutoffs_url,
+def download_and_load_p16_data(station_to_tc_cutoffs_url="https://raw.githubusercontent.com/nitrogenlab/GP15_watermassanalysis/main/P16_33RO20150525_station_to_tc_cutoffs.json",
                                 cutoffs_file_name="P16_33RO20150525_station_to_tc_cutoffs.json", cruise_number=1044):
     download_p16_data()
     return load_gp15_data(station_to_tc_cutoffs_url=station_to_tc_cutoffs_url,
