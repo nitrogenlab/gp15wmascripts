@@ -59,8 +59,19 @@ def p16_load_data():
     gp15_df["Depth"] = depth
 
     print("Rows:",len(gp15_df))
+    #filter out bad data
+    for flag_type in ["salinity flag", "oxygen flag",
+                      "silicate flag", "nitrate flag", "phosphate flag"]:
+        gp15_df = gp15_df[gp15_df[flag_type] > 0]
+    print("no. of rows with flag above zero:",len(gp15_df))
+    #make into df
+    gp15_df = pd.DataFrame(gp15_df)
+    #remove rows with missing data
     gp15_df = gp15_df.dropna()
-    print("Rows without NA values:",len(gp15_df))
+    print("no. of rows with NaN:",len(gp15_df))
+    #remove ros west of -140
+    gp15_df = gp15_df[gp15_df['lon']<-140]
+    print("no. of rows east of -140:",len(gp15_df))
 
     return gp15_df
 
