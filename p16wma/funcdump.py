@@ -84,9 +84,9 @@ def load_p16_data_split(cruise_number=1044):
 
 
 def load_gp15_data(station_to_tc_cutoffs_url,
-                   cutoffs_file_name):
+                   cutoffs_file_name, cruise_number=1044):
 
-    gp15_df = load_p16_data_split()
+    gp15_df = load_p16_data_split(cruise_number)
 
     download_file(url=station_to_tc_cutoffs_url, file_name=cutoffs_file_name)
     station_to_tcstartend = json.loads(open(cutoffs_file_name).read())
