@@ -63,7 +63,7 @@ def p16_load_data():
     return gp15_df
 
 
-def load_p16_data_unsplit():
+def load_p16_data_split(cruise_number):
     gp15_df = p16_load_data()
     #filter out bad data
     for flag_type in ["salinity flag", "oxygen flag",
@@ -78,14 +78,15 @@ def load_p16_data_unsplit():
     #remove ros west of -140
     gp15_df = gp15_df[gp15_df['lon']<-140]
     print("no. of rows east of -140:",len(gp15_df))
-
+    gp15_df = gp15_df[gp15_df['cruise'] == cruise_number]
+    print("no. of sample for cruise",cruise_number, ":",len(gp15_df))
     return gp15_df
 
 
 def load_gp15_data(station_to_tc_cutoffs_url,
                    cutoffs_file_name):
 
-    gp15_df = load_p16_data_unsplit()
+    gp15_df = load_p16_data_split()
 
     download_file(url=station_to_tc_cutoffs_url, file_name=cutoffs_file_name)
     station_to_tcstartend = json.loads(open(cutoffs_file_name).read())
