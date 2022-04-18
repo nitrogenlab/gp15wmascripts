@@ -63,7 +63,7 @@ def p16_load_data():
     return gp15_df
 
 
-def load_p16_data_split(cruise_number):
+def load_p16_data_split(cruise_number=1044):
     gp15_df = p16_load_data()
     #filter out bad data
     for flag_type in ["salinity flag", "oxygen flag",
