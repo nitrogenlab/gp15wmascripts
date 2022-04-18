@@ -115,7 +115,6 @@ def load_interanddeep_endmember_df(
         df_file_name="GP15_intermediateanddeep.csv"):
     download_file(url=df_url, file_name=df_file_name)
     endmember_df = pd.read_csv(df_file_name)
-    endmember_df = augment_df_with_PO_NO_SiO(endmember_df)
     return endmember_df
 
 
