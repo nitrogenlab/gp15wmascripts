@@ -92,8 +92,6 @@ def GP02_load_data():
 def load_GP02_data(station_to_tc_cutoffs_url,
                    cutoffs_file_name, cruise_number):
 
-    GP02_df = load_GP02_data_split(cruise_number)
-
     download_file(url=station_to_tc_cutoffs_url, file_name=cutoffs_file_name)
     station_to_tcstartend = json.loads(open(cutoffs_file_name).read())
 
@@ -118,7 +116,7 @@ def download_file(url, file_name):
 
 def load_interanddeep_endmember_df(
         df_url,
-        df_file_name="GP02_intermediateanddeep.csv"):
+        df_file_name="GP15_intermediateanddeep.csv"):
     download_file(url=df_url, file_name=df_file_name)
     endmember_df = pd.read_csv(df_file_name)
     return endmember_df
