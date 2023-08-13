@@ -39,17 +39,22 @@ def download_and_load_GP02_data(station_to_tc_cutoffs_url="https://github.com/ni
     return load_GP02_data(station_to_tc_cutoffs_url=station_to_tc_cutoffs_url,
                           cutoffs_file_name=cutoffs_file_nam)
 def GP02_load_data():
-    colnames_subset = ['G2cruise', 'G2station', "G2latitude", 'G2longitude', 'G2year', 'G2depth',
-                   'G2pressure', 'G2temperature', 'G2salinity',
-                   'G2salinityf','G2oxygen','G2oxygenf','G2silicate',
-                   'G2silicatef',  'G2nitrate', 'G2nitratef', 
-                   'G2phosphate', 'G2phosphatef','G2sigma0']
-
+   colnames_subset = ['Cruise', 'Station', 'Latitude [degrees_north]', 'Longitude [degrees_east]', 'yyyy-mm-ddThh:mm:ss.sss', 
+                       'DEPTH [m]', 'CTDPRS_T_VALUE_SENSOR [dbar]', 'CTDTMP_T_VALUE_SENSOR [deg C]', 'CTDSAL_D_CONC_SENSOR [pss-78]',
+                   'QV:SEADATANET','OXYGEN_D_CONC_BOTTLE [umol/kg]','QV:SEADATANET','SILICATE_D_CONC_BOTTLE [umol/kg]',
+                   'QV:SEADATANET',  'NITRATE_D_CONC_BOTTLE [umol/kg]', 'QV:SEADATANET', 
+                   'PHOSPHATE_D_CONC_BOTTLE [umol/kg]', 'QV:SEADATANET','sigma0']
+   col_list=["Station", "Longitude [degrees_east]", "Latitude [degrees_north]", "CTDPRS_T_VALUE_SENSOR [dbar]", 
+             "CTDTMP_T_VALUE_SENSOR [deg C]", "CTDSAL_D_CONC_SENSOR [pss-78]"]
+   GP02_df = pd.read_csv('purged_csv_file.csv', usecols=col_list)
 
     GP02_df = pd.read_csv("bottleGP02_IDP2021_v2_GEOTRACES_Seawater_Discrete_Sample_Data_v2_wlG854xv.csv", na_values = -9999)[colnames_subset]
+   
+    GP02_df = GP02_df.assign(STNNBR=GP02_df['STNNBR'].str.replace(r'\D', ''))
+    GP02_df['STNNBR'] = GP02_df['STNNBR'].astype(int)
 
     GP02_columns =['cruise', 'stnnbr',"lat", 'lon', 'year', 'depth',
-             'CTD pressure', 'temperature','salinity', "salinity flag", 
+             'CTD pressure', 'temperature', 'salinity', "salinity flag", 
              'oxygen', "oxygen flag", 'silicate', "silicate flag", 'nitrate', 
              "nitrate flag", 'phosphate', "phosphate flag", 'sigma0'] 
     GP02_df.columns= GP02_columns
@@ -81,26 +86,6 @@ def GP02_load_data():
 
     print("Rows:",len(GP02_df))
 
-    return GP02_df
-
-
-def load_GP02_data_split(cruise_number):
-    GP02_df = GP02_load_data()
-    #filter out bad data
-    for flag_type in ["salinity flag", "oxygen flag",
-                      "silicate flag", "nitrate flag", "phosphate flag"]:
-        GP02_df = GP02_df[GP02_df[flag_type] > 0]
-    print("no. of rows with flag above zero:",len(GP02_df))
-    #make into df
-    GP02_df = pd.DataFrame(GP02_df)
-    #remove rows with missing data
-    GP02_df = GP02_df.dropna()
-    print("no. of rows with NaN:",len(GP02_df))
-    #remove ros west of -140
-    GP02_df = GP02_df[GP02_df['lon']<-140]
-    print("no. of rows east of -140:",len(GP02_df))
-    GP02_df = GP02_df[GP02_df['cruise'] == cruise_number]
-    print("no. of sample for cruise",cruise_number, ":",len(GP02_df))
     return GP02_df
 
 
