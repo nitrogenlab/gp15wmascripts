@@ -46,7 +46,7 @@ def GP02_load_data():
                    'G2phosphate', 'G2phosphatef','G2sigma0']
 
 
-    GP02_df = pd.read_csv("GLODAPv2.2021_Pacific_Ocean.csv", na_values = -9999)[colnames_subset]
+    GP02_df = pd.read_csv("bottleGP02_IDP2021_v2_GEOTRACES_Seawater_Discrete_Sample_Data_v2_wlG854xv.csv", na_values = -9999)[colnames_subset]
 
     GP02_columns =['cruise', 'stnnbr',"lat", 'lon', 'year', 'depth',
              'CTD pressure', 'temperature','salinity', "salinity flag", 
