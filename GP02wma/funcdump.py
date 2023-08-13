@@ -63,27 +63,27 @@ def GP02_load_data():
               p=GP02_df["CTD pressure"],
               on=GP02_df["lon"],
               lat=GP02_df["lat"])))
-    GP02_df["absolute_salinity"] = absolute_salinity
+   GP02_df["absolute_salinity"] = absolute_salinity
 
-    conservative_temp = gsw.CT_from_t(SA=absolute_salinity,
-                                  t=np.array(GP02_df["temperature"]),
-                                  p=np.array(GP02_df["CTD pressure"]))
-    GP02_df["conservative_temp"] = conservative_temp
+   conservative_temp = gsw.CT_from_t(SA=absolute_salinity,
+               t=np.array(GP02_df["temperature"]),
+               p=np.array(GP02_df["CTD pressure"]))
+   GP02_df["conservative_temp"] = conservative_temp
 
-    potential_temp = gsw.pt_from_CT(SA=absolute_salinity,
+   potential_temp = gsw.pt_from_CT(SA=absolute_salinity,
                                 CT=conservative_temp)
-    GP02_df["potential_temp"] = potential_temp
+   GP02_df["potential_temp"] = potential_temp
 
-    sig0 = gsw.rho(SA=np.array(absolute_salinity), CT=np.array(conservative_temp), p=0) - 1000
-    GP02_df["sigma0"] = sig0
+   sig0 = gsw.rho(SA=np.array(absolute_salinity), CT=np.array(conservative_temp), p=0) - 1000
+   GP02_df["sigma0"] = sig0
 
-    z = gsw.z_from_p(p=np.array(GP02_df["CTD pressure"]), lat=np.array(GP02_df["lat"]))
-    depth = -z #https://github.com/TEOS-10/python-gsw/blob/7d6ebe8114c5d8b4a64268d36100a70e226afaf6/gsw/gibbs/conversions.py#L577
-    GP02_df["Depth"] = depth
+   z = gsw.z_from_p(p=np.array(GP02_df["CTD pressure"]), lat=np.array(GP02_df["lat"]))
+   depth = -z #https://github.com/TEOS-10/python-gsw/blob/7d6ebe8114c5d8b4a64268d36100a70e226afaf6/gsw/gibbs/conversions.py#L577
+   GP02_df["Depth"] = depth
 
-    print("Rows:",len(GP02_df))
+   print("Rows:",len(GP02_df))
 
-    return GP02_df
+   return GP02_df
 
 
 def load_GP02_data(station_to_tc_cutoffs_url,
