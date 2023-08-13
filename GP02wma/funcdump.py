@@ -10,12 +10,12 @@ import scipy.io
 from collections import OrderedDict
 
 
-def download_gp15_data():
-   #os.system("wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1Gla6o_YihOCfU5pWGLhFvL-TKm_0aXfQ' -O names_added_GP15OMPA_33RR20180918_only_gs_rosette_clean1_hy1.csv") 
-    #os.system("wget 'http://optserv1.whoi.edu/jgofsopt/80/128.12.123.170/GP15_Bottle_Leg1.mat' -O GP15_Bottle_Leg1.mat")
-    #os.system("wget 'http://optserv1.whoi.edu/jgofsopt/80/128.12.123.170/GP15_Bottle_Leg2.mat' -O GP15_Bottle_Leg2.mat")
-    os.system("wget 'http://raw.githubusercontent.com/nitrogenlab/GP15_watermassanalysis/main/GP15_Bottle_Leg1.mat' -O GP15_Bottle_Leg1.mat")
-    os.system("wget 'http://raw.githubusercontent.com/nitrogenlab/GP15_watermassanalysis/main/GP15_Bottle_Leg2.mat' -O GP15_Bottle_Leg2.mat")
+def download_GP02_data():
+   #os.system("wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1Gla6o_YihOCfU5pWGLhFvL-TKm_0aXfQ' -O names_added_GP02OMPA_33RR20180918_only_gs_rosette_clean1_hy1.csv") 
+    #os.system("wget 'http://optserv1.whoi.edu/jgofsopt/80/128.12.123.170/GP02_Bottle_Leg1.mat' -O GP02_Bottle_Leg1.mat")
+    #os.system("wget 'http://optserv1.whoi.edu/jgofsopt/80/128.12.123.170/GP02_Bottle_Leg2.mat' -O GP02_Bottle_Leg2.mat")
+    os.system("wget 'http://raw.githubusercontent.com/nitrogenlab/GP02_watermassanalysis/main/GP02_Bottle_Leg1.mat' -O GP02_Bottle_Leg1.mat")
+    os.system("wget 'http://raw.githubusercontent.com/nitrogenlab/GP02_watermassanalysis/main/GP02_Bottle_Leg2.mat' -O GP02_Bottle_Leg2.mat")
 
 def augment_df_with_PO_NO_SiO(df):  
     #remineralization ratios
@@ -28,16 +28,16 @@ def augment_df_with_PO_NO_SiO(df):
     return df
 
 
-def download_and_load_gp15_data(station_to_tc_cutoffs_url,
+def download_and_load_GP02_data(station_to_tc_cutoffs_url,
                                 cutoffs_file_name="station_to_tc_cutoffs.json"):
-    download_gp15_data()
-    return load_gp15_data(station_to_tc_cutoffs_url=station_to_tc_cutoffs_url,
+    download_GP02_data()
+    return load_GP02_data(station_to_tc_cutoffs_url=station_to_tc_cutoffs_url,
                           cutoffs_file_name=cutoffs_file_name)
 
 
-def gp15_load_mat_data():
-    leg1 = scipy.io.loadmat('GP15_Bottle_Leg1.mat')
-    leg2 = scipy.io.loadmat('GP15_Bottle_Leg2.mat')
+def GP02_load_mat_data():
+    leg1 = scipy.io.loadmat('GP02_Bottle_Leg1.mat')
+    leg2 = scipy.io.loadmat('GP02_Bottle_Leg2.mat')
 
     header_mapping = {
         'bottle flag': ('BTLNBR_FLAG_W', 'BTLNBR_FLAG_W'),
@@ -100,77 +100,77 @@ def gp15_load_mat_data():
         dict_for_data_frame[new_header_name] = np.concatenate(
             [leg1_arr, leg2_arr])
 
-    gp15_df = pd.DataFrame(dict_for_data_frame)
+    GP02_df = pd.DataFrame(dict_for_data_frame)
 
-    return gp15_df
+    return GP02_df
 
 
-def load_gp15_data_unsplit():
-    gp15_df = gp15_load_mat_data()
+def load_GP02_data_unsplit():
+    GP02_df = GP02_load_mat_data()
     #remove bad data
     for flag_type in ["bottle flag", "CTD salinity flag", "bottle oxygen flag",
                       "silicate flag", "nitrate flag", "phosphate flag"]:
-        gp15_df = gp15_df[gp15_df[flag_type] <= 3]
-    gp15_df = pd.DataFrame(gp15_df)
+        GP02_df = GP02_df[GP02_df[flag_type] <= 3]
+    GP02_df = pd.DataFrame(GP02_df)
 
     #add PO and NO to data frame
-    augment_df_with_PO_NO_SiO(gp15_df)
+    augment_df_with_PO_NO_SiO(GP02_df)
 
     absolute_salinity = gsw.SA_from_SP(
-        SP=np.array(gp15_df["practical_salinity"]),
-        p=np.array(gp15_df["CTD pressure"]),
-        lon=np.array(gp15_df["lon"]),
-        lat=np.array(gp15_df["lat"]))
-    gp15_df["absolute_salinity"] = absolute_salinity
+        SP=np.array(GP02_df["practical_salinity"]),
+        p=np.array(GP02_df["CTD pressure"]),
+        lon=np.array(GP02_df["lon"]),
+        lat=np.array(GP02_df["lat"]))
+    GP02_df["absolute_salinity"] = absolute_salinity
 
     conservative_temp = gsw.CT_from_t(SA=absolute_salinity,
-                                      t=np.array(gp15_df["CTD temperature"]),
-                                      p=np.array(gp15_df["CTD pressure"]))
-    gp15_df["conservative_temp"] = conservative_temp
+                                      t=np.array(GP02_df["CTD temperature"]),
+                                      p=np.array(GP02_df["CTD pressure"]))
+    GP02_df["conservative_temp"] = conservative_temp
 
     potential_temp = gsw.pt_from_CT(SA=absolute_salinity,
                                     CT=conservative_temp)
-    gp15_df["potential_temp"] = potential_temp
+    GP02_df["potential_temp"] = potential_temp
 
     sig0 = gsw.rho(SA=absolute_salinity, CT=conservative_temp, p=0) - 1000
-    gp15_df["sigma0"] = sig0
+    GP02_df["sigma0"] = sig0
 
-    z = gsw.z_from_p(p=np.array(gp15_df["CTD pressure"]),
-                     lat=np.array(gp15_df["lat"]))
+    z = gsw.z_from_p(p=np.array(GP02_df["CTD pressure"]),
+                     lat=np.array(GP02_df["lat"]))
     depth = -z #https://github.com/TEOS-10/python-gsw/blob/7d6ebe8114c5d8b4a64268d36100a70e226afaf6/gsw/gibbs/conversions.py#L577
-    gp15_df["Depth"] = depth
+    GP02_df["Depth"] = depth
 
     spic0 = gsw.spiciness0(SA=absolute_salinity, CT=conservative_temp)
-    gp15_df["spiciness"] = spic0
+    GP02_df["spiciness"] = spic0
 
-    print("Rows in gp15 datafile:",len(gp15_df))
-    gp15_df = gp15_df.dropna()
-    print("Rows without NA values:",len(gp15_df))
+    print("Rows in GP02 datafile:",len(GP02_df))
+    GP02_df = GP02_df.dropna()
+    print("Rows without NA values:",len(GP02_df))
 
-    return gp15_df
+    return GP02_df
 
 
-def load_gp15_data(station_to_tc_cutoffs_url,
+def load_GP02_data(station_to_tc_cutoffs_url,
                    cutoffs_file_name):
 
-    gp15_df = load_gp15_data_unsplit()
+    GP02_df = load_GP02_data_unsplit()
 
     download_file(url=station_to_tc_cutoffs_url, file_name=cutoffs_file_name)
     station_to_tcstartend = json.loads(open(cutoffs_file_name).read())
 
-    gp15_intermediateanddeep = gp15_df[
-        gp15_df.apply(
+    GP02_intermediateanddeep = GP02_df[
+        GP02_df.apply(
           lambda x: x['Depth'] >
                     station_to_tcstartend[
                       str(float(x['stnnbr']))]['depth_cutoffs'][1], axis=1)] 
 
-    gp15_thermocline =  gp15_df[gp15_df.apply(
+    GP02_thermocline =  GP02_df[GP02_df.apply(
             lambda x: (x['Depth'] > station_to_tcstartend[
                          str(float(x['stnnbr']))]['depth_cutoffs'][0])
                   and (x['Depth'] < station_to_tcstartend[
                          str(float(x['stnnbr']))]['depth_cutoffs'][1]), axis=1)]
 
-    return gp15_df, gp15_intermediateanddeep, gp15_thermocline
+    return GP02_df, GP02_intermediateanddeep, GP02_thermocline
 
 
 def download_file(url, file_name):
@@ -179,7 +179,7 @@ def download_file(url, file_name):
 
 def load_interanddeep_endmember_df(
         df_url,
-        df_file_name="GP15_intermediateanddeep.csv"):
+        df_file_name="GP02_intermediateanddeep.csv"):
     download_file(url=df_url, file_name=df_file_name)
     endmember_df = pd.read_csv(df_file_name)
     endmember_df = augment_df_with_PO_NO_SiO(endmember_df)
