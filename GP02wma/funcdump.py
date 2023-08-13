@@ -80,9 +80,6 @@ def GP02_load_data():
     z = gsw.z_from_p(p=np.array(GP02_df["CTD pressure"]), lat=np.array(GP02_df["lat"]))
     depth = -z #https://github.com/TEOS-10/python-gsw/blob/7d6ebe8114c5d8b4a64268d36100a70e226afaf6/gsw/gibbs/conversions.py#L577
     GP02_df["Depth"] = depth
-    
-    #merge cruises 276 and 277 as one 
-    GP02_df = GP02_df.replace({'cruise': 277}, 276)
 
     print("Rows:",len(GP02_df))
 
@@ -90,7 +87,7 @@ def GP02_load_data():
 
 
 def load_GP02_data(station_to_tc_cutoffs_url,
-                   cutoffs_file_name, cruise_number):
+                   cutoffs_file_name):
 
     download_file(url=station_to_tc_cutoffs_url, file_name=cutoffs_file_name)
     station_to_tcstartend = json.loads(open(cutoffs_file_name).read())
