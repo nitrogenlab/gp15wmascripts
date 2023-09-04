@@ -31,58 +31,58 @@ def download_and_load_GP02_data(station_to_tc_cutoffs_url="https://github.com/ni
                                 cutoffs_file_name="GP02_station_to_tc_cutoffs.json"):
     return load_GP02_data(station_to_tc_cutoffs_url=station_to_tc_cutoffs_url,
                           cutoffs_file_name=cutoffs_file_name)
-def GP02_load_data():
-   import gsw
-   colnames_subset = ['Cruise', 'Station', 'Latitude [degrees_north]', 'Longitude [degrees_east]', 'yyyy-mm-ddThh:mm:ss.sss', 
-                       'DEPTH [m]', 'CTDPRS_T_VALUE_SENSOR [dbar]', 'CTDTMP_T_VALUE_SENSOR [deg C]', 'CTDSAL_D_CONC_SENSOR [pss-78]',
-                   'QV:SEADATANET','OXYGEN_D_CONC_BOTTLE [umol/kg]','QV:SEADATANET','SILICATE_D_CONC_BOTTLE [umol/kg]',
-                   'QV:SEADATANET',  'NITRATE_D_CONC_BOTTLE [umol/kg]', 'QV:SEADATANET', 
-                   'PHOSPHATE_D_CONC_BOTTLE [umol/kg]', 'QV:SEADATANET']
-   col_list=["Station", "Longitude [degrees_east]", "Latitude [degrees_north]", "CTDPRS_T_VALUE_SENSOR [dbar]", 
-             "CTDTMP_T_VALUE_SENSOR [deg C]", "CTDSAL_D_CONC_SENSOR [pss-78]"]
+#def GP02_load_data():
+   #import gsw
+   #colnames_subset = ['Cruise', 'Station', 'Latitude [degrees_north]', 'Longitude [degrees_east]', 'yyyy-mm-ddThh:mm:ss.sss', 
+                       #'DEPTH [m]', 'CTDPRS_T_VALUE_SENSOR [dbar]', 'CTDTMP_T_VALUE_SENSOR [deg C]', 'CTDSAL_D_CONC_SENSOR [pss-78]',
+                   #'QV:SEADATANET','OXYGEN_D_CONC_BOTTLE [umol/kg]','QV:SEADATANET','SILICATE_D_CONC_BOTTLE [umol/kg]',
+                   #'QV:SEADATANET',  'NITRATE_D_CONC_BOTTLE [umol/kg]', 'QV:SEADATANET', 
+                   #'PHOSPHATE_D_CONC_BOTTLE [umol/kg]', 'QV:SEADATANET']
+   #col_list=["Station", "Longitude [degrees_east]", "Latitude [degrees_north]", "CTDPRS_T_VALUE_SENSOR [dbar]", 
+             #"CTDTMP_T_VALUE_SENSOR [deg C]", "CTDSAL_D_CONC_SENSOR [pss-78]"]
    #GP02_df = pd.read_csv('purged_csv_file.csv', usecols=col_list)
 
-   GP02_df = pd.read_csv("/Users/rianlawrence/Downloads/ocim_dir/bottleGP02_IDP2021_v2_GEOTRACES_Seawater_Discrete_Sample_Data_v2_wlG854xv.csv", na_values = -9999)[colnames_subset]
+  # GP02_df = pd.read_csv("/Users/rianlawrence/Downloads/ocim_dir/bottleGP02_IDP2021_v2_GEOTRACES_Seawater_Discrete_Sample_Data_v2_wlG854xv.csv", na_values = -9999)[colnames_subset]
    
-   GP02_df = GP02_df.assign(Station=GP02_df['Station'].str.replace(r'\D', ''))
-   GP02_df['Station'] = GP02_df['Station'].astype(int)
+   #GP02_df = GP02_df.assign(Station=GP02_df['Station'].str.replace(r'\D', ''))
+   #GP02_df['Station'] = GP02_df['Station'].astype(int)
 
-   GP02_columns =['cruise', 'stnnbr',"lat", 'lon', 'year', 'depth',
-             'CTD pressure', 'temperature', 'salinity', "salinity flag", 
-             'oxygen', "oxygen flag", 'silicate', "silicate flag", 'nitrate', 
-             "nitrate flag", 'phosphate', "phosphate flag"] 
-   GP02_df.columns= GP02_columns
+  # GP02_columns =['cruise', 'stnnbr',"lat", 'lon', 'year', 'depth',
+             #'CTD pressure', 'temperature', 'salinity', "salinity flag", 
+             #'oxygen', "oxygen flag", 'silicate', "silicate flag", 'nitrate', 
+            # "nitrate flag", 'phosphate', "phosphate flag"] 
+  # GP02_df.columns= GP02_columns
 
-   absolute_salinity = np.array((gsw.SA_from_SP(SP=GP02_df["salinity"],
-              p=GP02_df["CTD pressure"],
-              lon=GP02_df["lon"],
-              lat=GP02_df["lat"])))
-   GP02_df["absolute_salinity"] = absolute_salinity
+   #absolute_salinity = np.array((gsw.SA_from_SP(SP=GP02_df["salinity"],
+              #p=GP02_df["CTD pressure"],
+              #lon=GP02_df["lon"],
+              #lat=GP02_df["lat"])))
+ #  GP02_df["absolute_salinity"] = absolute_salinity
 
-   conservative_temp = gsw.CT_from_t(SA=absolute_salinity,
-               t=np.array(GP02_df["temperature"]),
-               p=np.array(GP02_df["CTD pressure"]))
-   GP02_df["conservative_temp"] = conservative_temp
+ # conservative_temp = gsw.CT_from_t(SA=absolute_salinity,
+               #t=np.array(GP02_df["temperature"]),
+              # p=np.array(GP02_df["CTD pressure"]))
+  # GP02_df["conservative_temp"] = conservative_temp
 
-   potential_temp = gsw.pt_from_CT(SA=absolute_salinity,
-                                CT=conservative_temp)
-   GP02_df["potential_temp"] = potential_temp
+   #potential_temp = gsw.pt_from_CT(SA=absolute_salinity,
+                                #CT=conservative_temp)
+  # GP02_df["potential_temp"] = potential_temp
 
-   sig0 = gsw.rho(SA=np.array(absolute_salinity), CT=np.array(conservative_temp), p=0) - 1000
-   GP02_df["sigma0"] = sig0
+   #sig0 = gsw.rho(SA=np.array(absolute_salinity), CT=np.array(conservative_temp), p=0) - 1000
+   #GP02_df["sigma0"] = sig0
 
-   z = gsw.z_from_p(p=np.array(GP02_df["CTD pressure"]), lat=np.array(GP02_df["lat"]))
-   depth = -z #https://github.com/TEOS-10/python-gsw/blob/7d6ebe8114c5d8b4a64268d36100a70e226afaf6/gsw/gibbs/conversions.py#L577
-   GP02_df["Depth"] = depth
+  # z = gsw.z_from_p(p=np.array(GP02_df["CTD pressure"]), lat=np.array(GP02_df["lat"]))
+   #depth = -z #https://github.com/TEOS-10/python-gsw/blob/7d6ebe8114c5d8b4a64268d36100a70e226afaf6/gsw/gibbs/conversions.py#L577
+   #GP02_df["Depth"] = depth
 
-   print("Rows:",len(GP02_df))
+  # print("Rows:",len(GP02_df))
 
-   return GP02_df
+  # return GP02_df
 
 
 def load_GP02_data(station_to_tc_cutoffs_url,
                    cutoffs_file_name):
-    GP02_df = GP02_load_data()
+    #GP02_df = GP02_load_data()
 
     download_file(url=station_to_tc_cutoffs_url, file_name=cutoffs_file_name)
     station_to_tcstartend = json.loads(open(cutoffs_file_name).read())
