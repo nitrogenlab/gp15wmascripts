@@ -32,7 +32,7 @@ def download_and_load_GP02_data(station_to_tc_cutoffs_url="https://github.com/ni
     return load_GP02_data(station_to_tc_cutoffs_url=station_to_tc_cutoffs_url,
                           cutoffs_file_name=cutoffs_file_name)
 def GP02_load_data():
-   #import gsw
+   import gsw
    colnames_subset = ['Cruise', 'Station', 'Latitude [degrees_north]', 'Longitude [degrees_east]', 'yyyy-mm-ddThh:mm:ss.sss', 
                        'DEPTH [m]', 'CTDPRS_T_VALUE_SENSOR [dbar]', 'CTDTMP_T_VALUE_SENSOR [deg C]', 'CTDSAL_D_CONC_SENSOR [pss-78]',
                    'QV:SEADATANET','OXYGEN_D_CONC_BOTTLE [umol/kg]','QV:SEADATANET','SILICATE_D_CONC_BOTTLE [umol/kg]',
