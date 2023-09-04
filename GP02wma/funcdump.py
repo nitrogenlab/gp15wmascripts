@@ -10,11 +10,11 @@ import scipy.io
 from collections import OrderedDict
 
 
-def download_GP02_data():
+#def download_GP02_data():
    #os.system("wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1Gla6o_YihOCfU5pWGLhFvL-TKm_0aXfQ' -O names_added_GP02OMPA_33RR20180918_only_gs_rosette_clean1_hy1.csv") 
     #os.system("wget 'http://optserv1.whoi.edu/jgofsopt/80/128.12.123.170/GP02_Bottle_Leg1.mat' -O GP02_Bottle_Leg1.mat")
     #os.system("wget 'http://optserv1.whoi.edu/jgofsopt/80/128.12.123.170/GP02_Bottle_Leg2.mat' -O GP02_Bottle_Leg2.mat")
-    os.system("wget 'https://github.com/nitrogenlab/GP02wmascripts/blob/e91f38333636b0f9fa5a97b49c351bc3e4f54028/GP02wma/bottleGP02_IDP2021_v2_GEOTRACES_Seawater_Discrete_Sample_Data_v2_wlG854xv.csv' -O bottleGP02_IDP2021_v2_GEOTRACES_Seawater_Discrete_Sample_Data_v2_wlG854xv.csv")
+    os.system("wget 'https://github.com/nitrogenlab/gp15wmascripts/blob/e91f38333636b0f9fa5a97b49c351bc3e4f54028/GP02wma/bottleGP02_IDP2021_v2_GEOTRACES_Seawater_Discrete_Sample_Data_v2_wlG854xv.csv' -O bottleGP02_IDP2021_v2_GEOTRACES_Seawater_Discrete_Sample_Data_v2_wlG854xv.csv")
 
 def augment_df_with_PO_NO_SiO(df):  
     #remineralization ratios
