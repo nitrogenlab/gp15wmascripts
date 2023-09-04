@@ -27,12 +27,6 @@ def augment_df_with_PO_NO_SiO(df):
     return df
 
 
-def download_and_load_GP02_data(station_to_tc_cutoffs_url,
-                                cutoffs_file_name="GP02_station_to_tc_cutoffs.json"):
-    download_GP02_data()
-    return load_GP02_data(station_to_tc_cutoffs_url=station_to_tc_cutoffs_url,
-                          cutoffs_file_name=cutoffs_file_name)
-
 def download_and_load_GP02_data(station_to_tc_cutoffs_url="https://github.com/nitrogenlab/GP15_watermassanalysis/blob/0a64ed0faca01701cf6c84d09365abc706594e2c/GP02_station_to_tc_cutoffs.json",
                                 cutoffs_file_name="GP02_station_to_tc_cutoffs.json"):
     download_GP02_data()
