@@ -3,20 +3,20 @@ from pyompa import EndMemExpPenaltyFunc
 from pyompa.endmemberpenaltyfunc import GeneralPenaltyFunc
 from collections import OrderedDict
 
+#remove nitrate
+
 PARAM_NAMES = ["conservative_temp", "absolute_salinity",
-              "silicate", "nitrate", "phosphate", "oxygen"]
+              "silicate", "phosphate", "oxygen"]
 
 CONVERTEDPARAM_GROUPS = [
     pyompa.ConvertedParamGroup(
         groupname="phosphate_remin",
         conversion_ratios=[#Representing C:P = 66
                            {"oxygen": -155*(66.0/106.0),
-                            "phosphate": 1.0,
-                            "nitrate": 16.0*(66.0/106.0)},
+                            "phosphate": 1.0},
                            #Representing C:P = 209
                            {"oxygen": -155*(209.0/106.0),
-                            "phosphate": 1.0,
-                            "nitrate": 16.0*(209.0/106.0)}
+                            "phosphate": 1.0}
                           ],
         always_positive=False)
 ]
@@ -25,7 +25,6 @@ PARAM_WEIGHTINGS = {
     "conservative_temp": 56.0,
     "absolute_salinity": 80.0,
     "silicate": 3.0,
-    "nitrate": 5.0,
     "phosphate": 5.0,
     "oxygen": 1.0,
     "NO": 1.0,
