@@ -39,7 +39,6 @@ def GP02_load_data():
              "CTDTMP_T_VALUE_SENSOR [deg C]", "CTDSAL_D_CONC_SENSOR [pss-78]"]
                       
 
-
     GP02_df = pd.read_csv("bottleGP02_IDP2021_v2_GEOTRACES_Seawater_Discrete_Sample_Data_v2_wlG854xv.csv", na_values = -9999)[colnames_subset]
    
     GP02_df = GP02_df.assign(Station=GP02_df['Station'].str.replace(r'\D', ''))
@@ -72,7 +71,10 @@ def GP02_load_data():
     z = gsw.z_from_p(p=np.array(GP02_df["CTD pressure"]), lat=np.array(GP02_df["lat"]))
     depth = -z #https://github.com/TEOS-10/python-gsw/blob/7d6ebe8114c5d8b4a64268d36100a70e226afaf6/gsw/gibbs/conversions.py#L577
     GP02_df["Depth"] = depth
-    #print("Rows:",len(GP02_df))
+    
+    print("Rows in gp02 datafile:",len(GP02_df))
+    GP02_df = GP02_df.dropna()
+    print("Rows without NA values:",len(GP02_df))
     return GP02_df
 
 
