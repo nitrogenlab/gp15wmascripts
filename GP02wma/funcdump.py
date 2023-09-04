@@ -41,7 +41,7 @@ def GP02_load_data():
                    'PHOSPHATE_D_CONC_BOTTLE [umol/kg]', 'QV:SEADATANET','sigma0']
    col_list=["Station", "Longitude [degrees_east]", "Latitude [degrees_north]", "CTDPRS_T_VALUE_SENSOR [dbar]", 
              "CTDTMP_T_VALUE_SENSOR [deg C]", "CTDSAL_D_CONC_SENSOR [pss-78]"]
-   GP02_df = pd.read_csv('purged_csv_file.csv', usecols=col_list)
+   #GP02_df = pd.read_csv('purged_csv_file.csv', usecols=col_list)
 
    GP02_df = pd.read_csv("bottleGP02_IDP2021_v2_GEOTRACES_Seawater_Discrete_Sample_Data_v2_wlG854xv.csv", na_values = -9999)[colnames_subset]
    
@@ -83,6 +83,7 @@ def GP02_load_data():
 
 def load_GP02_data(station_to_tc_cutoffs_url,
                    cutoffs_file_name):
+    GP02_df = GP02_load_data()
 
     download_file(url=station_to_tc_cutoffs_url, file_name=cutoffs_file_name)
     station_to_tcstartend = json.loads(open(cutoffs_file_name).read())
