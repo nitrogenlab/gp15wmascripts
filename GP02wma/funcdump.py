@@ -10,11 +10,11 @@ import scipy.io
 from collections import OrderedDict
 
 
-def download_GP02_data():
+#def download_GP02_data():
    #os.system("wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1Gla6o_YihOCfU5pWGLhFvL-TKm_0aXfQ' -O names_added_GP02OMPA_33RR20180918_only_gs_rosette_clean1_hy1.csv") 
     #os.system("wget 'http://optserv1.whoi.edu/jgofsopt/80/128.12.123.170/GP02_Bottle_Leg1.mat' -O GP02_Bottle_Leg1.mat")
     #os.system("wget 'http://optserv1.whoi.edu/jgofsopt/80/128.12.123.170/GP02_Bottle_Leg2.mat' -O GP02_Bottle_Leg2.mat")
-    os.system("wget 'https://github.com/nitrogenlab/gp15wmascripts/blob/e91f38333636b0f9fa5a97b49c351bc3e4f54028/GP02wma/bottleGP02_IDP2021_v2_GEOTRACES_Seawater_Discrete_Sample_Data_v2_wlG854xv.csv' -O bottleGP02_IDP2021_v2_GEOTRACES_Seawater_Discrete_Sample_Data_v2_wlG854xv.csv")
+    #os.system("wget 'https://github.com/nitrogenlab/gp15wmascripts/blob/e91f38333636b0f9fa5a97b49c351bc3e4f54028/GP02wma/bottleGP02_IDP2021_v2_GEOTRACES_Seawater_Discrete_Sample_Data_v2_wlG854xv.csv' -O bottleGP02_IDP2021_v2_GEOTRACES_Seawater_Discrete_Sample_Data_v2_wlG854xv.csv")
 
 def augment_df_with_PO_NO_SiO(df):  
     #remineralization ratios
@@ -29,7 +29,6 @@ def augment_df_with_PO_NO_SiO(df):
 
 def download_and_load_GP02_data(station_to_tc_cutoffs_url="https://github.com/nitrogenlab/GP15_watermassanalysis/blob/0a64ed0faca01701cf6c84d09365abc706594e2c/GP02_station_to_tc_cutoffs.json",
                                 cutoffs_file_name="GP02_station_to_tc_cutoffs.json"):
-    download_GP02_data()
     return load_GP02_data(station_to_tc_cutoffs_url=station_to_tc_cutoffs_url,
                           cutoffs_file_name=cutoffs_file_name)
 def GP02_load_data():
@@ -43,7 +42,7 @@ def GP02_load_data():
              "CTDTMP_T_VALUE_SENSOR [deg C]", "CTDSAL_D_CONC_SENSOR [pss-78]"]
    #GP02_df = pd.read_csv('purged_csv_file.csv', usecols=col_list)
 
-   GP02_df = pd.read_csv("bottleGP02_IDP2021_v2_GEOTRACES_Seawater_Discrete_Sample_Data_v2_wlG854xv.csv", na_values = -9999)[colnames_subset]
+   GP02_df = pd.read_csv("/Users/rianlawrence/Downloads/ocim_dir/bottleGP02_IDP2021_v2_GEOTRACES_Seawater_Discrete_Sample_Data_v2_wlG854xv.csv", na_values = -9999)[colnames_subset]
    
    GP02_df = GP02_df.assign(STNNBR=GP02_df['STNNBR'].str.replace(r'\D', ''))
    GP02_df['STNNBR'] = GP02_df['STNNBR'].astype(int)
