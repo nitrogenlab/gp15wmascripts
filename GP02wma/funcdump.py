@@ -37,25 +37,25 @@ def GP02_load_data():
                        'DEPTH [m]', 'CTDPRS_T_VALUE_SENSOR [dbar]', 'CTDTMP_T_VALUE_SENSOR [deg C]', 'CTDSAL_D_CONC_SENSOR [pss-78]',
                    'QV:SEADATANET','OXYGEN_D_CONC_BOTTLE [umol/kg]','QV:SEADATANET','SILICATE_D_CONC_BOTTLE [umol/kg]',
                    'QV:SEADATANET',  'NITRATE_D_CONC_BOTTLE [umol/kg]', 'QV:SEADATANET', 
-                   'PHOSPHATE_D_CONC_BOTTLE [umol/kg]', 'QV:SEADATANET','sigma0']
+                   'PHOSPHATE_D_CONC_BOTTLE [umol/kg]', 'QV:SEADATANET']
    col_list=["Station", "Longitude [degrees_east]", "Latitude [degrees_north]", "CTDPRS_T_VALUE_SENSOR [dbar]", 
              "CTDTMP_T_VALUE_SENSOR [deg C]", "CTDSAL_D_CONC_SENSOR [pss-78]"]
    #GP02_df = pd.read_csv('purged_csv_file.csv', usecols=col_list)
 
    GP02_df = pd.read_csv("/Users/rianlawrence/Downloads/ocim_dir/bottleGP02_IDP2021_v2_GEOTRACES_Seawater_Discrete_Sample_Data_v2_wlG854xv.csv", na_values = -9999)[colnames_subset]
    
-   GP02_df = GP02_df.assign(STNNBR=GP02_df['STNNBR'].str.replace(r'\D', ''))
-   GP02_df['STNNBR'] = GP02_df['STNNBR'].astype(int)
+   GP02_df = GP02_df.assign(Station=GP02_df['Station'].str.replace(r'\D', ''))
+   GP02_df['Station'] = GP02_df['Station'].astype(int)
 
    GP02_columns =['cruise', 'stnnbr',"lat", 'lon', 'year', 'depth',
              'CTD pressure', 'temperature', 'salinity', "salinity flag", 
              'oxygen', "oxygen flag", 'silicate', "silicate flag", 'nitrate', 
-             "nitrate flag", 'phosphate', "phosphate flag", 'sigma0'] 
+             "nitrate flag", 'phosphate', "phosphate flag"] 
    GP02_df.columns= GP02_columns
 
    absolute_salinity = np.array((gsw.SA_from_SP(SP=GP02_df["salinity"],
               p=GP02_df["CTD pressure"],
-              on=GP02_df["lon"],
+              lon=GP02_df["lon"],
               lat=GP02_df["lat"])))
    GP02_df["absolute_salinity"] = absolute_salinity
 
