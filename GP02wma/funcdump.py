@@ -37,7 +37,7 @@ def download_and_load_GP02_data(station_to_tc_cutoffs_url="https://github.com/ni
                                 cutoffs_file_name="GP02_station_to_tc_cutoffs.json"):
     download_GP02_data()
     return load_GP02_data(station_to_tc_cutoffs_url=station_to_tc_cutoffs_url,
-                          cutoffs_file_name=cutoffs_file_nam)
+                          cutoffs_file_name=cutoffs_file_name)
 def GP02_load_data():
    #import gsw
    colnames_subset = ['Cruise', 'Station', 'Latitude [degrees_north]', 'Longitude [degrees_east]', 'yyyy-mm-ddThh:mm:ss.sss', 
