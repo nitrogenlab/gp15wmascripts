@@ -10,7 +10,7 @@ import scipy.io
 from collections import OrderedDict
 
 
-#def download_GP02_data():
+def download_GP02_data():
    #os.system("wget --no-check-certificate 'https://docs.google.com/uc?export=download&id=1Gla6o_YihOCfU5pWGLhFvL-TKm_0aXfQ' -O names_added_GP02OMPA_33RR20180918_only_gs_rosette_clean1_hy1.csv") 
     #os.system("wget 'http://optserv1.whoi.edu/jgofsopt/80/128.12.123.170/GP02_Bottle_Leg1.mat' -O GP02_Bottle_Leg1.mat")
     #os.system("wget 'http://optserv1.whoi.edu/jgofsopt/80/128.12.123.170/GP02_Bottle_Leg2.mat' -O GP02_Bottle_Leg2.mat")
